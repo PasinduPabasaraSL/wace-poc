@@ -395,7 +395,10 @@ function PodCanvas({ podName, pod, onBack, isLoading, user }: {
 
   const fetchBlocks = async () => {
     try {
-      const response = await fetch(`/api/blocks?podId=${podData.id}`)
+      setBlocksLoading(true)
+      const response = await fetch(`/api/blocks?podId=${podData.id}`, {
+        cache: 'no-store', // Ensure fresh data
+      })
       if (response.ok) {
         const data = await response.json()
         // Organize blocks by type and ensure id field is set
@@ -501,38 +504,44 @@ function PodCanvas({ podName, pod, onBack, isLoading, user }: {
     // Check if user is creator or has block access (only for chat and docs)
     const isCreator = user && box.creatorId === user.id
     
-    if ((box.type === "chat" || box.type === "docs" || box.type === "calendar" || box.type === "goals") && !isCreator) {
-      // Check if user is a block member
-      try {
-        const response = await fetch(`/api/blocks/${boxId}/members`)
-        if (response.ok) {
-          const data = await response.json()
-          const hasAccess = data.members.some((m: any) => m.id === user?.id)
-          if (!hasAccess) {
-            alert("You don't have access to this block. Ask the creator to add you.")
-            setOpeningBox(null)
-            return
-          }
-        } else {
-          // If error, assume no access
-          alert("You don't have access to this block. Ask the creator to add you.")
-          setOpeningBox(null)
-          return
-        }
-      } catch (error) {
-        console.error("Error checking block access:", error)
-        alert("Error checking access. Please try again.")
-        setOpeningBox(null)
-        return
-      }
-    }
-    
-    // Small delay to prevent rapid clicks
-    setTimeout(() => {
-      // Open the modal
+    // For creators, open immediately without checking
+    if (isCreator) {
       setSelectedBox(boxId)
       setOpeningBox(null)
-    }, 100)
+      return
+    }
+    
+    // For non-creators, check access (but do it in parallel, don't block)
+    if ((box.type === "chat" || box.type === "docs" || box.type === "calendar" || box.type === "goals")) {
+      // Open immediately, check access in background
+      setSelectedBox(boxId)
+      setOpeningBox(null)
+      
+      // Check access asynchronously
+      fetch(`/api/blocks/${boxId}/members`)
+        .then(response => {
+          if (response.ok) {
+            return response.json()
+          }
+          throw new Error('Access check failed')
+        })
+        .then(data => {
+          const hasAccess = data.members.some((m: any) => m.id === user?.id)
+          if (!hasAccess) {
+            // Close modal if no access
+            setSelectedBox(null)
+            alert("You don't have access to this block. Ask the creator to add you.")
+          }
+        })
+        .catch(error => {
+          console.error("Error checking block access:", error)
+          // Don't close on error, let user try
+        })
+    } else {
+      // For other types, open immediately
+      setSelectedBox(boxId)
+      setOpeningBox(null)
+    }
   }
 
   const handleMouseDown = (e, boxId) => {
@@ -740,7 +749,7 @@ function PodCanvas({ podName, pod, onBack, isLoading, user }: {
         </div>
       </div>
 
-      {isLoading ? (
+      {isLoading || blocksLoading ? (
         <div className="flex-1 flex items-center justify-center bg-white dark:bg-black">
           <div className="flex flex-col items-center gap-4">
             <Spinner className="w-8 h-8 text-gray-600 dark:text-white" />

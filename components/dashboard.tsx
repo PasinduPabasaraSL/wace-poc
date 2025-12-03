@@ -57,11 +57,12 @@ export default function Dashboard() {
     setActiveView("canvas")
     setIsLoading(true)
     
-    // Small delay to show loading state, then load
+    // Clear loading state quickly - blocks will load and show their own loading state
+    // This makes navigation feel instant
     setTimeout(() => {
       setIsLoading(false)
       setIsNavigating(false)
-    }, 300)
+    }, 50)
   }
 
   const handleBackToDashboard = () => {
