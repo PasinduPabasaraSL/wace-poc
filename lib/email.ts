@@ -22,8 +22,11 @@ export async function sendInvitationEmail({
   }
 
   try {
+    // Use custom domain if configured, otherwise fall back to Resend test domain
+    const fromEmail = process.env.RESEND_FROM_EMAIL || 'WACE <onboarding@resend.dev>'
+    
     const { data, error } = await resend.emails.send({
-      from: 'WACE <onboarding@resend.dev>', // Update with your verified domain
+      from: fromEmail,
       to,
       subject: `You've been invited to join ${podName} on WACE`,
       html: `
