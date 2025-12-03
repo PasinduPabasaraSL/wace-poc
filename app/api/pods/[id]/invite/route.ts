@@ -92,12 +92,29 @@ export async function POST(
     })
 
     // Send email
-    const invitationLink = `${process.env.NEXTAUTH_URL}/api/invitations/accept/${invitation.token}`
-    await sendInvitationEmail({
+    const baseUrl = process.env.NEXTAUTH_URL || 
+      (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000')
+    const invitationLink = `${baseUrl}/invitation/accept?token=${invitation.token}`
+    
+    const emailResult = await sendInvitationEmail({
       to: email,
       podName: pod.name,
       invitationLink,
     })
+
+    // Check if email was sent successfully
+    if (!emailResult.success) {
+      console.error('Failed to send invitation email:', emailResult.error)
+      // Delete the invitation if email failed
+      await Invitation.findByIdAndDelete(invitation._id)
+      return NextResponse.json(
+        { 
+          error: 'Failed to send invitation email. Please check your email configuration and try again.',
+          details: process.env.NODE_ENV === 'development' ? emailResult.error : undefined
+        },
+        { status: 500 }
+      )
+    }
 
     return NextResponse.json(
       {

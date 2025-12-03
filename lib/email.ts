@@ -1,6 +1,10 @@
 import { Resend } from 'resend'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+if (!process.env.RESEND_API_KEY) {
+  console.error('RESEND_API_KEY is not set in environment variables')
+}
+
+const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null
 
 export async function sendInvitationEmail({
   to,
@@ -11,6 +15,12 @@ export async function sendInvitationEmail({
   podName: string
   invitationLink: string
 }) {
+  if (!resend) {
+    const error = 'Resend is not configured. RESEND_API_KEY is missing.'
+    console.error(error)
+    return { success: false, error: new Error(error) }
+  }
+
   try {
     const { data, error } = await resend.emails.send({
       from: 'WACE <onboarding@resend.dev>', // Update with your verified domain
