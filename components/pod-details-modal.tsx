@@ -143,6 +143,9 @@ export default function PodDetailsModal({ open, onClose, pod, user }: {
             setShowInviteModal(false)
             fetchPodDetails() // Refresh member count
           }}
+          onMemberAdded={() => {
+            fetchPodDetails() // Refresh immediately when member is added
+          }}
           pod={podDetails}
         />
       )}

@@ -63,3 +63,99 @@ export async function GET(
   }
 }
 
+// POST /api/pods/:id/members - Add a member directly to a pod (no email required)
+export async function POST(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const session = await auth()
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    await connectDB()
+
+    const { id } = await params
+    const { userId, email } = await request.json()
+
+    // Check if pod exists
+    const pod = await Pod.findById(id)
+    if (!pod) {
+      return NextResponse.json({ error: 'Pod not found' }, { status: 404 })
+    }
+
+    // Check if user is the creator
+    if (pod.creatorId.toString() !== session.user.id) {
+      return NextResponse.json(
+        { error: 'Only the creator can add members directly' },
+        { status: 403 }
+      )
+    }
+
+    // Find user by userId or email
+    let user
+    if (userId) {
+      user = await User.findById(userId)
+    } else if (email) {
+      user = await User.findOne({ email: email.toLowerCase().trim() })
+    } else {
+      return NextResponse.json(
+        { error: 'userId or email is required' },
+        { status: 400 }
+      )
+    }
+
+    if (!user) {
+      return NextResponse.json(
+        { error: 'User not found' },
+        { status: 404 }
+      )
+    }
+
+    // Check if user is already a member
+    const existingMember = await PodMember.findOne({
+      podId: id,
+      userId: user._id,
+    })
+
+    if (existingMember) {
+      return NextResponse.json(
+        { error: 'User is already a member of this pod' },
+        { status: 400 }
+      )
+    }
+
+    // Add user as pod member
+    const podMember = await PodMember.create({
+      podId: id,
+      userId: user._id,
+      role: 'member',
+    })
+
+    // Get user details
+    const memberData = {
+      id: user._id.toString(),
+      name: user.name,
+      email: user.email,
+      profilePicture: user.profilePicture,
+      role: podMember.role,
+      joinedAt: podMember.joinedAt || podMember.createdAt,
+    }
+
+    return NextResponse.json(
+      {
+        message: 'Member added successfully',
+        member: memberData,
+      },
+      { status: 201 }
+    )
+  } catch (error: any) {
+    console.error('Add pod member error:', error)
+    return NextResponse.json(
+      { error: error.message || 'Internal server error' },
+      { status: 500 }
+    )
+  }
+}
+
