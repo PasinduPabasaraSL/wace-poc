@@ -6,7 +6,7 @@ import { allowedEmailDomains } from "@/lib/allowedDomains";
 
 export async function POST(request: NextRequest) {
   try {
-    await connectDB();
+    await connectDB(); //test deployment
 
     const { email, password, name } = await request.json();
 
