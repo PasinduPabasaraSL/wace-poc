@@ -64,7 +64,7 @@ export default function SignupPage() {
 
       if (signInResponse.ok) {
         router.push("/dashboard")
-        router.refresh()
+        //router.refresh()
       } else {
         setError("Account created but sign in failed. Please try logging in.")
         setIsLoading(false)
