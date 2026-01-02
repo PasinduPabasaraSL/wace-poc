@@ -5,8 +5,11 @@ import { useState, useEffect } from "react"
 import { useTheme } from "next-themes"
 import Image from "next/image"
 
-export default function SettingsPage({ user: userProp = null, onUserUpdate = null }) {
-  const [user, setUser] = useState(null)
+export default function SettingsPage({ user: userProp = null, onUserUpdate = null }: {
+  user?: any
+  onUserUpdate?: (() => void) | null
+}) {
+  const [user, setUser] = useState<any>(null)
   const [name, setName] = useState("")
   const [isLoading, setIsLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)

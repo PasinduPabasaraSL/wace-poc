@@ -1,7 +1,7 @@
 "use client"
 
 import { Bell, FileText, File, Video, Calendar, Target, ChevronDown, ArrowLeft, Plus, MessageCircle, Users, X, Smile, Clock, MapPin, CheckCircle2, Circle, Edit, Share2, Search, MoreVertical, Upload, LogOut, Trash2, Crown, Download, ZoomIn, ZoomOut, Maximize2, Minimize2 } from "lucide-react"
-import { useState, useEffect, useRef, useMemo } from "react"
+import { useState, useEffect, useRef } from "react"
 import DeletePodModal from "./delete-pod-modal"
 import DeleteBlockModal from "./delete-block-modal"
 import PodDetailsModal from "./pod-details-modal"
@@ -72,7 +72,10 @@ export default function MainContent({ activeView, activePod, onPodClick, onBackT
 
   const unreadCount = notifications.filter((n) => n.unread).length
 
-  const welcomeMessage = useMemo(() => {
+  // Use state + effect to avoid hydration mismatch from Date/Math.random
+  const [welcomeMessage, setWelcomeMessage] = useState("")
+  
+  useEffect(() => {
     const hour = new Date().getHours()
     const timeGreeting = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening"
     const name = user?.name || ""
@@ -89,7 +92,7 @@ export default function MainContent({ activeView, activePod, onPodClick, onBackT
           `${timeGreeting}! Time to create something awesome ✨`,
           `Hey there! Ready to build? 🎯`
         ]
-    return greetings[Math.floor(Math.random() * greetings.length)]
+    setWelcomeMessage(greetings[Math.floor(Math.random() * greetings.length)])
   }, [user?.name])
 
   return (
@@ -392,7 +395,7 @@ function PodCanvas({ podName, pod, onBack, isLoading, user }: {
   const podData = pod || { name: podName, tagline: "", id: null }
 
   const [activeSection, setActiveSection] = useState("chat")
-  const [blocks, setBlocks] = useState({
+  const [blocks, setBlocks] = useState<Record<string, any[]>>({
     chat: [],
     docs: [],
     meetings: [],
@@ -437,14 +440,14 @@ function PodCanvas({ podName, pod, onBack, isLoading, user }: {
       if (response.ok) {
         const data = await response.json()
         // Organize blocks by type and ensure id field is set
-        const organizedBlocks = {
+        const organizedBlocks: Record<string, any[]> = {
           chat: [],
           docs: [],
           meetings: [],
           calendar: [],
           goals: [],
         }
-        data.blocks.forEach((block) => {
+        data.blocks.forEach((block: any) => {
           if (organizedBlocks[block.type]) {
             organizedBlocks[block.type].push({
               ...block,
@@ -624,9 +627,9 @@ function PodCanvas({ podName, pod, onBack, isLoading, user }: {
     }
   }
 
-  const handleMouseDown = (e, boxId) => {
+  const handleMouseDown = (e: React.MouseEvent, boxId: string) => {
     e.stopPropagation()
-    const box = currentBlocks.find((b) => b.id === boxId)
+    const box = currentBlocks.find((b: any) => b.id === boxId)
     if (!box) return
     
     const initialMouseX = e.clientX
@@ -818,12 +821,12 @@ function PodCanvas({ podName, pod, onBack, isLoading, user }: {
     }
   }
 
-  const handleMouseMove = (e) => {
+  const handleMouseMove = (e: React.MouseEvent) => {
     // If there's a pending drag and mouse moved significantly, start dragging
     if (pendingDrag.boxId && pendingDrag.initialPos && !draggingId && !isPanning) {
       const mouseMoved = Math.abs(e.clientX - pendingDrag.initialPos.x) > 5 || Math.abs(e.clientY - pendingDrag.initialPos.y) > 5
       if (mouseMoved) {
-        const box = currentBlocks.find((b) => b.id === pendingDrag.boxId)
+        const box = currentBlocks.find((b: any) => b.id === pendingDrag.boxId)
         if (box) {
           setDraggingId(pendingDrag.boxId)
           setDragStart({
@@ -851,7 +854,7 @@ function PodCanvas({ podName, pod, onBack, isLoading, user }: {
       
       setBlocks((prev) => ({
         ...prev,
-        [activeSection]: prev[activeSection].map((box) =>
+        [activeSection]: prev[activeSection].map((box: any) =>
           box.id === draggingId
             ? {
                 ...box,
@@ -1134,7 +1137,7 @@ function PodCanvas({ podName, pod, onBack, isLoading, user }: {
           {selectedBox && activeSection === "meetings" && (
             <MeetingModal 
               boxId={selectedBox} 
-              meetingData={currentBlocks.find(b => b.id === selectedBox)?.meetingData}
+              meetingData={currentBlocks.find((b: any) => b.id === selectedBox)?.meetingData}
               onClose={() => setSelectedBox(null)} 
             />
           )}
@@ -1219,7 +1222,12 @@ function PodCanvas({ podName, pod, onBack, isLoading, user }: {
   )
 }
 
-function NavButton({ icon, title, active, onClick }) {
+function NavButton({ icon, title, active, onClick }: {
+  icon: React.ReactNode
+  title: string
+  active: boolean
+  onClick: () => void
+}) {
   return (
     <button
       onClick={onClick}
