@@ -77,16 +77,18 @@ export default function DeletePodModal({ open, onClose, pod, onDelete }: {
               Delete Pod
             </DialogTitle>
           </div>
-          <DialogDescription className="text-gray-600 dark:text-white">
-            This action cannot be undone. This will permanently delete the pod <strong>"{pod?.name}"</strong> and all of its data including:
-            <ul className="list-disc list-inside mt-2 space-y-1 text-sm">
-              <li>All blocks (Chat, Docs, Meetings, Calendar, Goals)</li>
-              <li>All messages and conversations</li>
-              <li>All documents and files</li>
-              <li>All calendar events</li>
-              <li>All goals and tasks</li>
-              <li>All members and invitations</li>
-            </ul>
+          <DialogDescription asChild>
+            <div className="text-gray-600 dark:text-white text-sm">
+              This action cannot be undone. This will permanently delete the pod <strong>"{pod?.name}"</strong> and all of its data including:
+              <ul className="list-disc list-inside mt-2 space-y-1 text-sm">
+                <li>All blocks (Chat, Docs, Meetings, Calendar, Goals)</li>
+                <li>All messages and conversations</li>
+                <li>All documents and files</li>
+                <li>All calendar events</li>
+                <li>All goals and tasks</li>
+                <li>All members and invitations</li>
+              </ul>
+            </div>
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4 py-4">
