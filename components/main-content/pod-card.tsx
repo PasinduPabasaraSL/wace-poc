@@ -52,8 +52,11 @@ export default function PodCard({
   return (
     <>
       <div className="group bg-white dark:bg-black rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-200 dark:border-white/20 relative">
-        <button
+        <div
           onClick={onClick}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onClick?.() }}
           className="w-full text-left cursor-pointer"
         >
           <div className="relative h-56 overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900">
@@ -88,7 +91,7 @@ export default function PodCard({
             <h3 className="font-bold text-gray-900 dark:text-white text-lg mb-1.5 truncate">{name}</h3>
             <p className="text-sm text-gray-600 dark:text-white line-clamp-2">{tagline || "No tagline"}</p>
           </div>
-        </button>
+        </div>
       </div>
       {showDeleteModal && (
         <DeletePodModal
