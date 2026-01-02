@@ -3,7 +3,12 @@
 import Image from "next/image"
 import { Home, Compass, Plus, Sparkles, Settings, ShoppingBag } from "lucide-react"
 
-export default function Sidebar({ activeView, onNavigate, pods = [], user = null }) {
+export default function Sidebar({ activeView, onNavigate, pods = [], user = null }: {
+  activeView: string
+  onNavigate: (view: string, pod?: any) => void
+  pods?: any[]
+  user?: any
+}) {
   return (
     <div className="w-64 bg-white dark:bg-black text-gray-900 dark:text-white flex flex-col h-screen border-r border-gray-200 dark:border-white/20 shadow-sm">
       {/* Brand */}
@@ -98,7 +103,12 @@ export default function Sidebar({ activeView, onNavigate, pods = [], user = null
   )
 }
 
-function NavItem({ icon: Icon, label, active = false, onClick }) {
+function NavItem({ icon: Icon, label, active = false, onClick }: {
+  icon: any
+  label: string
+  active?: boolean
+  onClick: () => void
+}) {
   return (
     <button
       onClick={onClick}
@@ -114,12 +124,16 @@ function NavItem({ icon: Icon, label, active = false, onClick }) {
   )
 }
 
-function PodItem({ pod, onClick, index = 0 }) {
-  const getInitial = (name) => {
+function PodItem({ pod, onClick, index = 0 }: {
+  pod: any
+  onClick: () => void
+  index?: number
+}) {
+  const getInitial = (name: string) => {
     return name ? name.charAt(0).toUpperCase() : "?"
   }
 
-  const getColorClass = (idx) => {
+  const getColorClass = (idx: number) => {
     const colors = [
       "bg-gray-700 dark:bg-white text-white dark:text-black",
       "bg-orange-500 dark:bg-white text-white dark:text-black",

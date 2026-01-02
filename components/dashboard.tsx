@@ -49,7 +49,7 @@ export default function Dashboard() {
 
   const [isNavigating, setIsNavigating] = useState(false)
 
-  const handlePodClick = (pod) => {
+  const handlePodClick = (pod: any) => {
     if (isNavigating || isLoading) return // Prevent multiple clicks
     
     setIsNavigating(true)
@@ -70,7 +70,7 @@ export default function Dashboard() {
     setActivePod(null)
   }
 
-  const handleNavigate = (view, podName = null) => {
+  const handleNavigate = (view: string, podName: any = null) => {
     if (view === "create-pod") {
       setShowCreatePodModal(true)
     } else if (view === "pod" && podName) {
@@ -80,7 +80,7 @@ export default function Dashboard() {
     }
   }
 
-  const handleCreatePod = async (podData) => {
+  const handleCreatePod = async (podData: any) => {
     try {
       const response = await fetch("/api/pods", {
         method: "POST",
