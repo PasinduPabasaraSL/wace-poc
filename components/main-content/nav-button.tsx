@@ -23,8 +23,8 @@ export default function NavButton({ icon, title, active, onClick }: NavButtonPro
       onClick={onClick}
       className={`w-9 h-9 flex items-center justify-center rounded-lg transition ${
         active
-          ? "bg-black dark:bg-black text-white dark:text-white shadow-sm"
-          : "text-gray-700 dark:text-black hover:bg-gray-200 dark:hover:bg-gray-100"
+          ? "bg-black dark:bg-white text-white dark:text-black shadow-sm"
+          : "text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100"
       }`}
       title={title}
     >

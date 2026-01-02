@@ -1,8 +1,9 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Calendar, Plus, Users, Trash2, X, Minimize2, Maximize2 } from "lucide-react"
 import AddMembersToBlockModal from "@/components/add-members-to-block-modal"
+import { useFormattedDatesMap } from "./hooks"
 import type { CalendarEvent } from "./types"
 
 interface CalendarModalProps {
@@ -34,34 +35,21 @@ export function CalendarModal({
   const [showAddMembersModal, setShowAddMembersModal] = useState(false)
   const [editingEvent, setEditingEvent] = useState<CalendarEvent | null>(null)
   const [isFullscreen, setIsFullscreen] = useState(false)
+  const isMountedRef = useRef(true)
   
-  // Client-side formatted dates
-  const [formattedDates, setFormattedDates] = useState<Record<string, string>>({})
+  // Use shared hook for date formatting (hydration-safe)
+  const formattedDates = useFormattedDatesMap(events, 'date')
 
   const calendarName = calendarData?.label || "Calendar"
   const isCreator = user && calendarData?.creatorId === user.id
 
   useEffect(() => {
+    isMountedRef.current = true
     if (boxId) {
       fetchEvents()
     }
+    return () => { isMountedRef.current = false }
   }, [boxId])
-
-  // Format dates on client only (avoid hydration mismatch)
-  useEffect(() => {
-    const dates: Record<string, string> = {}
-    events.forEach((event) => {
-      if (event.date) {
-        const date = new Date(event.date)
-        dates[event.id] = date.toLocaleDateString("en-US", {
-          year: "numeric",
-          month: "short",
-          day: "numeric",
-        })
-      }
-    })
-    setFormattedDates(dates)
-  }, [events])
 
   const fetchEvents = async () => {
     try {
@@ -334,7 +322,7 @@ export function AddEventModal({
             </h2>
             <button
               onClick={onClose}
-              className="text-gray-400 dark:text-white hover:text-gray-600 dark:hover:text-black transition"
+              className="text-gray-400 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition"
             >
               <X size={20} />
             </button>

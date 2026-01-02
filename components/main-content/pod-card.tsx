@@ -35,14 +35,9 @@ export default function PodCard({
 }: PodCardProps) {
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [showDetailsModal, setShowDetailsModal] = useState(false)
-  const [isCreator, setIsCreator] = useState(false)
-
-  useEffect(() => {
-    // Check if current user is the creator based on role
-    if (pod && pod.role === 'creator') {
-      setIsCreator(true)
-    }
-  }, [pod])
+  
+  // Derived state - no useEffect needed
+  const isCreator = pod?.role === 'creator'
 
   const handleDeleteClick = (e: React.MouseEvent) => {
     e.stopPropagation()
@@ -52,8 +47,11 @@ export default function PodCard({
   return (
     <>
       <div className="group bg-white dark:bg-black rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-200 dark:border-white/20 relative">
-        <button
+        <div
           onClick={onClick}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onClick?.() }}
           className="w-full text-left cursor-pointer"
         >
           <div className="relative h-56 overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900">
@@ -69,7 +67,7 @@ export default function PodCard({
                 e.stopPropagation()
                 setShowDetailsModal(true)
               }}
-              className="absolute top-3 right-3 p-2 bg-white/90 dark:bg-black/90 backdrop-blur-sm text-gray-600 dark:text-white rounded-lg opacity-0 group-hover:opacity-100 transition-all shadow-lg hover:bg-white dark:hover:bg-white hover:scale-110"
+              className="absolute top-3 right-3 p-2 bg-white/90 dark:bg-black/90 backdrop-blur-sm text-gray-600 dark:text-gray-300 rounded-lg opacity-0 group-hover:opacity-100 transition-all shadow-lg hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100 hover:scale-110"
               title="Pod options"
             >
               <MoreVertical size={16} />
@@ -88,7 +86,7 @@ export default function PodCard({
             <h3 className="font-bold text-gray-900 dark:text-white text-lg mb-1.5 truncate">{name}</h3>
             <p className="text-sm text-gray-600 dark:text-white line-clamp-2">{tagline || "No tagline"}</p>
           </div>
-        </button>
+        </div>
       </div>
       {showDeleteModal && (
         <DeletePodModal

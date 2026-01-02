@@ -112,13 +112,13 @@ function NavItem({ icon: Icon, label, active = false, onClick }: {
   return (
     <button
       onClick={onClick}
-      className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
+      className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 group ${
         active 
           ? "bg-gray-100 dark:bg-white text-black dark:text-black shadow-sm" 
-          : "text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-white hover:text-gray-900 dark:hover:text-black"
+          : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100"
       }`}
     >
-      <Icon size={18} className={active ? "text-black dark:text-black" : ""} />
+      <Icon size={18} className={active ? "text-black dark:text-black" : "text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-gray-200 transition-colors"} />
       <span>{label}</span>
     </button>
   )
@@ -147,10 +147,10 @@ function PodItem({ pod, onClick, index = 0 }: {
   return (
     <button 
       onClick={onClick}
-      className="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white transition-all duration-200 text-sm group"
+      className="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200 text-sm group"
     >
       {pod.logoUrl ? (
-        <div className="w-7 h-7 rounded-md overflow-hidden flex-shrink-0 ring-1 ring-gray-200 dark:ring-white/20 group-hover:ring-gray-300 dark:group-hover:ring-white/30 transition-all">
+        <div className="w-7 h-7 rounded-md overflow-hidden flex-shrink-0 ring-1 ring-gray-200 dark:ring-white/20 group-hover:ring-gray-300 dark:group-hover:ring-white/40 transition-all">
           <Image
             src={pod.logoUrl}
             alt={pod.name}
@@ -164,7 +164,7 @@ function PodItem({ pod, onClick, index = 0 }: {
           {getInitial(pod.name)}
         </div>
       )}
-      <span className="text-gray-700 dark:text-white font-medium truncate group-hover:text-gray-900 dark:group-hover:text-black transition-colors">{pod.name}</span>
+      <span className="text-gray-700 dark:text-gray-300 font-medium truncate group-hover:text-gray-900 dark:group-hover:text-gray-100 transition-colors">{pod.name}</span>
     </button>
   )
 }

@@ -169,24 +169,24 @@ export default function SettingsPage({ user: userProp = null, onUserUpdate = nul
                   <div className="flex items-center gap-4">
                     <button
                       onClick={() => setTheme("light")}
-                      className={`flex items-center gap-2 px-4 py-2 rounded-lg border transition ${
+                      className={`flex items-center gap-2 px-4 py-2 rounded-lg border transition group ${
                         theme === "light"
-                          ? "bg-gray-900 dark:bg-white text-white dark:text-black border-gray-900 dark:border-white"
-                          : "bg-white dark:bg-black text-gray-700 dark:text-white border-gray-300 dark:border-white hover:bg-gray-50 dark:hover:bg-white"
+                          ? "bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 border-gray-900 dark:border-gray-100"
+                          : "bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800"
                       }`}
                     >
-                      <Sun size={18} />
+                      <Sun size={18} className={theme === "light" ? "" : "group-hover:text-gray-900 dark:group-hover:text-gray-100 transition-colors"} />
                       <span>Light</span>
                     </button>
                     <button
                       onClick={() => setTheme("dark")}
-                      className={`flex items-center gap-2 px-4 py-2 rounded-lg border transition ${
+                      className={`flex items-center gap-2 px-4 py-2 rounded-lg border transition group ${
                         theme === "dark"
-                          ? "bg-gray-900 dark:bg-white text-white dark:text-black border-gray-900 dark:border-white"
-                          : "bg-white dark:bg-black text-gray-700 dark:text-white border-gray-300 dark:border-white hover:bg-gray-50 dark:hover:bg-white"
+                          ? "bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 border-gray-900 dark:border-gray-100"
+                          : "bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800"
                       }`}
                     >
-                      <Moon size={18} />
+                      <Moon size={18} className={theme === "dark" ? "" : "group-hover:text-gray-900 dark:group-hover:text-gray-100 transition-colors"} />
                       <span>Dark</span>
                     </button>
                   </div>

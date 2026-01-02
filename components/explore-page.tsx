@@ -277,7 +277,7 @@ export default function ExplorePage({ onBack }: { onBack?: () => void }) {
                 className={`px-4 py-2 rounded-lg transition-all font-medium ${
                   filterType === "all"
                     ? "bg-gray-900 dark:bg-white text-white dark:text-black shadow-sm"
-                    : "bg-gray-100 dark:bg-white text-gray-700 dark:text-black hover:bg-gray-200 dark:hover:bg-white"
+                    : "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
                 }`}
               >
                 All

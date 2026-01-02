@@ -17,20 +17,32 @@ import { Spinner } from "@/components/ui/spinner"
 import { Upload, X } from "lucide-react"
 import Image from "next/image"
 
-export default function CreatePodModal({ open, onClose, onCreate }) {
+interface PodData {
+  name: string
+  tagline?: string
+  logoUrl: string | null
+}
+
+interface CreatePodModalProps {
+  open: boolean
+  onClose: () => void
+  onCreate: (data: PodData) => void
+}
+
+export default function CreatePodModal({ open, onClose, onCreate }: CreatePodModalProps) {
   const [podName, setPodName] = useState("")
   const [tagline, setTagline] = useState("")
-  const [logoFile, setLogoFile] = useState(null)
-  const [logoPreview, setLogoPreview] = useState(null)
+  const [logoFile, setLogoFile] = useState<File | null>(null)
+  const [logoPreview, setLogoPreview] = useState<string | null>(null)
   const [isUploading, setIsUploading] = useState(false)
 
-  const handleLogoChange = (e) => {
-    const file = e.target.files[0]
+  const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
     if (file) {
       setLogoFile(file)
       const reader = new FileReader()
       reader.onloadend = () => {
-        setLogoPreview(reader.result)
+        setLogoPreview(reader.result as string)
       }
       reader.readAsDataURL(file)
     }
@@ -41,7 +53,7 @@ export default function CreatePodModal({ open, onClose, onCreate }) {
     setLogoPreview(null)
   }
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (!podName.trim()) {
       alert("Pod name is required")

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import Sidebar from "./sidebar"
-import MainContent from "./main-content"
+import MainContent from "./main-content-refactored"
 import ExplorePage from "./explore-page"
 import CreatePodModal from "./create-pod-modal"
 import PersonalAssistantPage from "./personal-assistant-page"
