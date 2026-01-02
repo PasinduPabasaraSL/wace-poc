@@ -35,14 +35,9 @@ export default function PodCard({
 }: PodCardProps) {
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [showDetailsModal, setShowDetailsModal] = useState(false)
-  const [isCreator, setIsCreator] = useState(false)
-
-  useEffect(() => {
-    // Check if current user is the creator based on role
-    if (pod && pod.role === 'creator') {
-      setIsCreator(true)
-    }
-  }, [pod])
+  
+  // Derived state - no useEffect needed
+  const isCreator = pod?.role === 'creator'
 
   const handleDeleteClick = (e: React.MouseEvent) => {
     e.stopPropagation()

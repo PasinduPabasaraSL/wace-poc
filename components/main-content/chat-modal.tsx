@@ -1,11 +1,12 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, useCallback } from "react"
 import { MessageCircle, Users, X, Smile, Trash2, Minimize2, Maximize2 } from "lucide-react"
 import EmojiPicker from "@/components/emoji-picker"
 import MentionAutocomplete from "@/components/mention-autocomplete"
 import AddMembersToBlockModal from "@/components/add-members-to-block-modal"
 import { getAvatarColor, getInitials } from "./utils"
+import { useFormattedTimesMap } from "./hooks"
 import type { Member, ChatMessage } from "./types"
 
 interface ChatModalProps {
@@ -45,11 +46,12 @@ export function ChatModal({
   const [mentionQuery, setMentionQuery] = useState("")
   const [mentionPosition, setMentionPosition] = useState({ top: 0, left: 0 })
   const inputRef = useRef<HTMLInputElement>(null)
+  const isMountedRef = useRef(true)
   const [isFullscreen, setIsFullscreen] = useState(false)
   const [podOwnerId, setPodOwnerId] = useState<string | null>(null)
   
-  // Client-side formatted timestamps
-  const [formattedTimes, setFormattedTimes] = useState<Record<string, string>>({})
+  // Use shared hook for timestamp formatting (hydration-safe)
+  const formattedTimes = useFormattedTimesMap(messages, 'timestamp')
 
   const chatName = chatData?.label || "Chat"
   const chatDescription = chatData?.description || ""
@@ -57,29 +59,20 @@ export function ChatModal({
 
   // Fetch members and messages
   useEffect(() => {
+    isMountedRef.current = true
     if (boxId && podId) {
       fetchMembers()
       fetchMessages()
       fetchPodOwner()
       markMessagesAsRead()
       const interval = setInterval(fetchMessages, 2000)
-      return () => clearInterval(interval)
-    }
-  }, [boxId, podId])
-
-  // Format timestamps on client only (avoid hydration mismatch)
-  useEffect(() => {
-    const times: Record<string, string> = {}
-    messages.forEach((msg) => {
-      if (msg.timestamp) {
-        times[msg.id] = new Date(msg.timestamp).toLocaleTimeString([], {
-          hour: "2-digit",
-          minute: "2-digit",
-        })
+      return () => {
+        isMountedRef.current = false
+        clearInterval(interval)
       }
-    })
-    setFormattedTimes(times)
-  }, [messages])
+    }
+    return () => { isMountedRef.current = false }
+  }, [boxId, podId])
 
   const markMessagesAsRead = async () => {
     try {

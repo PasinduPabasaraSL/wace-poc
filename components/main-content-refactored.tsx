@@ -1,7 +1,7 @@
 "use client"
 
 import { Bell, ChevronDown, Plus, MessageCircle, File, Video, Calendar, Target, ArrowLeft, Trash2, ZoomIn, ZoomOut, Maximize2, LogOut } from "lucide-react"
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, useCallback, useMemo } from "react"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Spinner } from "@/components/ui/spinner"
 import { ThemeToggle } from "@/components/theme-toggle"
@@ -120,20 +120,15 @@ function DashboardView({
 }: DashboardViewProps) {
   const [notifications, setNotifications] = useState<Notification[]>([])
   const [notificationsLoading, setNotificationsLoading] = useState(true)
+  const isMountedRef = useRef(true)
   
   // Use client-side hook for welcome message (avoids hydration mismatch)
   const welcomeMessage = useWelcomeMessage(user?.name)
 
-  useEffect(() => {
-    fetchNotifications()
-    const interval = setInterval(fetchNotifications, 30000)
-    return () => clearInterval(interval)
-  }, [])
-
-  const fetchNotifications = async () => {
+  const fetchNotifications = useCallback(async () => {
     try {
       const response = await fetch("/api/notifications/unread")
-      if (response.ok) {
+      if (response.ok && isMountedRef.current) {
         const data = await response.json()
         const formattedNotifications = data.notifications.map((notif: any) => ({
           id: notif.blockId,
@@ -149,31 +144,43 @@ function DashboardView({
     } catch (error) {
       console.error("Error fetching notifications:", error)
     } finally {
-      setNotificationsLoading(false)
+      if (isMountedRef.current) {
+        setNotificationsLoading(false)
+      }
     }
-  }
+  }, [])
+
+  useEffect(() => {
+    isMountedRef.current = true
+    fetchNotifications()
+    const interval = setInterval(fetchNotifications, 30000)
+    return () => {
+      isMountedRef.current = false
+      clearInterval(interval)
+    }
+  }, [fetchNotifications])
 
   const unreadCount = notifications.filter((n) => n.unread).length
 
-  const markNotificationRead = async (notification: Notification) => {
+  const markNotificationRead = useCallback(async (notification: Notification) => {
     try {
       await fetch(`/api/blocks/${notification.blockId}/unread`, { method: "POST" })
       setNotifications((prev) => prev.filter((n) => n.id !== notification.id))
     } catch (error) {
       console.error("Error marking notification as read:", error)
     }
-  }
+  }, [])
 
-  const markAllNotificationsRead = async () => {
-    for (const notification of notifications) {
-      try {
-        await fetch(`/api/blocks/${notification.blockId}/unread`, { method: "POST" })
-      } catch (error) {
+  const markAllNotificationsRead = useCallback(async () => {
+    // Parallel requests instead of sequential
+    const promises = notifications.map((notification) =>
+      fetch(`/api/blocks/${notification.blockId}/unread`, { method: "POST" }).catch((error) =>
         console.error("Error marking notification as read:", error)
-      }
-    }
+      )
+    )
+    await Promise.all(promises)
     setNotifications([])
-  }
+  }, [notifications])
 
   return (
     <div className="flex-1 flex flex-col overflow-hidden bg-white dark:bg-black">
@@ -342,9 +349,7 @@ function DashboardView({
                   name={pod.name}
                   tagline={pod.tagline || ""}
                   onClick={() => onPodClick(pod)}
-                  onDelete={() => {
-                    if (onPodsUpdate) onPodsUpdate()
-                  }}
+                  onDelete={onPodsUpdate || (() => {})}
                   user={user}
                 />
               ))}
@@ -535,7 +540,11 @@ function PodCanvas({ podName, pod, onBack, isLoading, user }: PodCanvasProps) {
     }
   }
 
-  const currentBlocks = blocks[activeSection as keyof Blocks] || []
+  // Memoize current blocks to prevent recalculation on every render
+  const currentBlocks = useMemo(
+    () => blocks[activeSection as keyof Blocks] || [],
+    [blocks, activeSection]
+  )
 
   const handleDoubleClick = async (e: any, boxId: string) => {
     e.stopPropagation()

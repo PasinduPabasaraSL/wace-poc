@@ -1,9 +1,10 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Target, Plus, Users, Trash2, CheckCircle2, Circle, X, Minimize2, Maximize2 } from "lucide-react"
 import AddMembersToBlockModal from "@/components/add-members-to-block-modal"
 import { getStatusColor } from "./utils"
+import { useFormattedDatesMap } from "./hooks"
 import type { Goal } from "./types"
 
 interface GoalModalProps {
@@ -35,36 +36,21 @@ export function GoalModal({
   const [showAddMembersModal, setShowAddMembersModal] = useState(false)
   const [editingGoal, setEditingGoal] = useState<Goal | null>(null)
   const [isFullscreen, setIsFullscreen] = useState(false)
+  const isMountedRef = useRef(true)
   
-  // Client-side formatted dates
-  const [formattedDates, setFormattedDates] = useState<Record<string, string>>({})
+  // Use shared hook for date formatting (hydration-safe)
+  const formattedDates = useFormattedDatesMap(goals, 'dueDate')
 
   const trackerName = goalData?.label || "Goal Tracker"
   const isCreator = user && goalData?.creatorId === user.id
 
   useEffect(() => {
+    isMountedRef.current = true
     if (boxId) {
       fetchGoals()
     }
+    return () => { isMountedRef.current = false }
   }, [boxId])
-
-  // Format dates on client only (avoid hydration mismatch)
-  useEffect(() => {
-    const dates: Record<string, string> = {}
-    goals.forEach((goal) => {
-      if (goal.dueDate) {
-        const date = new Date(goal.dueDate)
-        dates[goal.id] = date.toLocaleDateString("en-US", {
-          year: "numeric",
-          month: "short",
-          day: "numeric",
-        })
-      } else {
-        dates[goal.id] = "No due date"
-      }
-    })
-    setFormattedDates(dates)
-  }, [goals])
 
   const fetchGoals = async () => {
     try {

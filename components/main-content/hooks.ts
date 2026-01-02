@@ -103,3 +103,66 @@ export function useHasMounted(): boolean {
 
   return hasMounted
 }
+
+/**
+ * Hook to format dates for a collection of items
+ * Avoids hydration mismatch by computing on client only
+ * @param items - Array of items with a date field
+ * @param dateField - The field name containing the date
+ * @param options - Intl.DateTimeFormatOptions for formatting
+ */
+export function useFormattedDatesMap<T extends { id: string }>(
+  items: T[],
+  dateField: keyof T,
+  options?: Intl.DateTimeFormatOptions
+): Record<string, string> {
+  const [formatted, setFormatted] = useState<Record<string, string>>({})
+
+  useEffect(() => {
+    const dates: Record<string, string> = {}
+    const defaultOptions: Intl.DateTimeFormatOptions = {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      ...options,
+    }
+    
+    items.forEach((item) => {
+      const dateValue = item[dateField]
+      if (dateValue) {
+        const date = new Date(dateValue as string)
+        dates[item.id] = date.toLocaleDateString('en-US', defaultOptions)
+      }
+    })
+    setFormatted(dates)
+  }, [items, dateField])
+
+  return formatted
+}
+
+/**
+ * Hook to format timestamps for messages
+ * Returns a map of id -> formatted time string
+ */
+export function useFormattedTimesMap<T extends { id: string }>(
+  items: T[],
+  timestampField: keyof T
+): Record<string, string> {
+  const [formatted, setFormatted] = useState<Record<string, string>>({})
+
+  useEffect(() => {
+    const times: Record<string, string> = {}
+    items.forEach((item) => {
+      const timestamp = item[timestampField]
+      if (timestamp) {
+        times[item.id] = new Date(timestamp as string).toLocaleTimeString([], {
+          hour: '2-digit',
+          minute: '2-digit',
+        })
+      }
+    })
+    setFormatted(times)
+  }, [items, timestampField])
+
+  return formatted
+}

@@ -1,9 +1,10 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { File, Search, Users, Upload, Download, Trash2, X, Minimize2, Maximize2 } from "lucide-react"
 import AddMembersToBlockModal from "@/components/add-members-to-block-modal"
 import { getAvatarColor, getInitials, formatFileSize, getFileTypeColor } from "./utils"
+import { useFormattedDatesMap } from "./hooks"
 import type { Document } from "./types"
 
 interface DocModalProps {
@@ -36,29 +37,21 @@ export function DocModal({
   const [uploading, setUploading] = useState(false)
   const [showAddMembersModal, setShowAddMembersModal] = useState(false)
   const [isFullscreen, setIsFullscreen] = useState(false)
+  const isMountedRef = useRef(true)
   
-  // Client-side formatted dates
-  const [formattedDates, setFormattedDates] = useState<Record<string, string>>({})
+  // Use shared hook for date formatting (hydration-safe)
+  const formattedDates = useFormattedDatesMap(documents, 'uploadedAt')
 
   const docName = docData?.label || "Documents"
   const isCreator = user && docData?.creatorId === user.id
 
   useEffect(() => {
+    isMountedRef.current = true
     if (boxId && podId) {
       fetchDocuments()
     }
+    return () => { isMountedRef.current = false }
   }, [boxId, podId])
-
-  // Format dates on client only (avoid hydration mismatch)
-  useEffect(() => {
-    const dates: Record<string, string> = {}
-    documents.forEach((doc) => {
-      if (doc.uploadedAt) {
-        dates[doc.id] = new Date(doc.uploadedAt).toLocaleDateString()
-      }
-    })
-    setFormattedDates(dates)
-  }, [documents])
 
   const fetchDocuments = async () => {
     try {
