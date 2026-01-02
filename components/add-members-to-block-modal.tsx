@@ -150,7 +150,7 @@ export default function AddMembersToBlockModal({ open, onClose, block, podId, on
                 {availableMembers.map((member) => (
                   <div
                     key={member.id}
-                    className="flex items-center justify-between p-3 bg-gray-50 dark:bg-white rounded-lg hover:bg-gray-100 dark:hover:bg-white transition"
+                    className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition"
                   >
                     <div className="flex items-center gap-3">
                       {member.profilePicture ? (
@@ -162,24 +162,24 @@ export default function AddMembersToBlockModal({ open, onClose, block, podId, on
                           />
                         </div>
                       ) : (
-                        <div className="w-10 h-10 bg-gray-300 dark:bg-black rounded-full flex items-center justify-center">
-                          <span className="text-gray-700 dark:text-white font-semibold text-sm">
+                        <div className="w-10 h-10 bg-gray-300 dark:bg-gray-600 rounded-full flex items-center justify-center">
+                          <span className="text-gray-700 dark:text-gray-200 font-semibold text-sm">
                             {member.name?.charAt(0).toUpperCase() || "U"}
                           </span>
                         </div>
                       )}
                       <div>
-                        <p className="text-sm font-medium text-gray-900 dark:text-black">
+                        <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
                           {member.name}
                         </p>
-                        <p className="text-xs text-gray-500 dark:text-black">{member.email}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">{member.email}</p>
                       </div>
                     </div>
                     <Button
                       onClick={() => handleAddMember(member.id)}
                       disabled={adding === member.id}
                       size="sm"
-                      className="bg-gray-900 dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-white"
+                      className="bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-200"
                     >
                       {adding === member.id ? (
                         "Adding..."

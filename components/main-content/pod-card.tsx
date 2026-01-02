@@ -67,7 +67,7 @@ export default function PodCard({
                 e.stopPropagation()
                 setShowDetailsModal(true)
               }}
-              className="absolute top-3 right-3 p-2 bg-white/90 dark:bg-black/90 backdrop-blur-sm text-gray-600 dark:text-white rounded-lg opacity-0 group-hover:opacity-100 transition-all shadow-lg hover:bg-white dark:hover:bg-white hover:scale-110"
+              className="absolute top-3 right-3 p-2 bg-white/90 dark:bg-black/90 backdrop-blur-sm text-gray-600 dark:text-gray-300 rounded-lg opacity-0 group-hover:opacity-100 transition-all shadow-lg hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100 hover:scale-110"
               title="Pod options"
             >
               <MoreVertical size={16} />

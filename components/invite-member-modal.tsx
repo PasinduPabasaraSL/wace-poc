@@ -183,7 +183,7 @@ export default function InviteMemberModal({ open, onClose, pod, onMemberAdded }:
             </div>
             <button
               onClick={handleClose}
-              className="text-gray-400 dark:text-white hover:text-gray-600 dark:hover:text-black transition"
+              className="text-gray-400 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition"
             >
               <X size={20} />
             </button>

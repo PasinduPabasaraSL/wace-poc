@@ -192,10 +192,10 @@ function DashboardView({
           <Popover>
             <PopoverTrigger asChild>
               <button
-                className="relative p-2.5 hover:bg-gray-100 dark:hover:bg-white rounded-lg transition-all duration-200"
+                className="relative p-2.5 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-all duration-200 group"
                 suppressHydrationWarning
               >
-                <Bell size={20} className="text-gray-600 dark:text-white" />
+                <Bell size={20} className="text-gray-600 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-gray-100 transition-colors" />
                 {unreadCount > 0 && (
                   <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-red-500 dark:bg-red-400 rounded-full ring-2 ring-white dark:ring-black animate-pulse"></span>
                 )}
@@ -232,8 +232,8 @@ function DashboardView({
                       <div
                         key={notification.id}
                         onClick={() => markNotificationRead(notification)}
-                        className={`p-4 hover:bg-gray-50 dark:hover:bg-white transition-all cursor-pointer ${
-                          notification.unread ? "bg-gray-100/50 dark:bg-white" : ""
+                        className={`p-4 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all cursor-pointer ${
+                          notification.unread ? "bg-gray-100/50 dark:bg-gray-900" : ""
                         }`}
                       >
                         <div className="flex items-start gap-3">
@@ -277,7 +277,7 @@ function DashboardView({
           </button>
           <button
             onClick={() => onNavigate("settings")}
-            className="flex items-center gap-2 hover:bg-gray-100 dark:hover:bg-white rounded-lg transition-all p-1.5"
+            className="flex items-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-all p-1.5 group"
           >
             {user?.profilePicture ? (
               <div className="w-10 h-10 rounded-full overflow-hidden ring-2 ring-gray-200 dark:ring-white/20">
@@ -288,18 +288,18 @@ function DashboardView({
                 />
               </div>
             ) : (
-              <div className="w-10 h-10 bg-gradient-to-br from-gray-300 to-gray-400 dark:from-white dark:to-white rounded-full flex items-center justify-center text-gray-700 dark:text-black font-semibold ring-2 ring-gray-200 dark:ring-white/20">
+              <div className="w-10 h-10 bg-gradient-to-br from-gray-300 to-gray-400 dark:from-gray-600 dark:to-gray-700 rounded-full flex items-center justify-center text-gray-700 dark:text-gray-200 font-semibold ring-2 ring-gray-200 dark:ring-white/20">
                 {user?.name ? user.name.charAt(0).toUpperCase() : "U"}
               </div>
             )}
-            <ChevronDown size={16} className="text-gray-600 dark:text-white" />
+            <ChevronDown size={16} className="text-gray-600 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-gray-100 transition-colors" />
           </button>
           <button
             onClick={handleLogout}
-            className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-white rounded-lg transition-all"
+            className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100 rounded-lg transition-all group"
             title="Log out"
           >
-            <LogOut size={16} />
+            <LogOut size={16} className="group-hover:text-gray-900 dark:group-hover:text-gray-100 transition-colors" />
             <span>Log out</span>
           </button>
         </div>
@@ -838,10 +838,10 @@ function PodCanvas({ podName, pod, onBack, isLoading, user }: PodCanvasProps) {
         <div className="flex items-center gap-4 pointer-events-auto">
           <button
             onClick={onBack}
-            className="p-1.5 text-gray-600 dark:text-white hover:text-gray-900 dark:hover:text-black hover:bg-gray-100 dark:hover:bg-white rounded-lg transition"
+            className="p-1.5 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition group"
             title="Back to Dashboard"
           >
-            <ArrowLeft size={18} />
+            <ArrowLeft size={18} className="group-hover:text-gray-900 dark:group-hover:text-gray-100 transition-colors" />
           </button>
           <div className="flex items-center gap-3">
             {podData.logoUrl ? (
@@ -971,24 +971,24 @@ function PodCanvas({ podName, pod, onBack, isLoading, user }: PodCanvasProps) {
           <div className="absolute bottom-4 right-4 z-20 flex flex-col gap-2 bg-white dark:bg-black border border-gray-200 dark:border-white/20 rounded-lg p-2 shadow-lg">
             <button
               onClick={handleZoomIn}
-              className="p-2 hover:bg-gray-100 dark:hover:bg-white rounded transition-colors"
+              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded transition-colors group"
               title="Zoom In"
             >
-              <ZoomIn size={18} className="text-gray-700 dark:text-white" />
+              <ZoomIn size={18} className="text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-gray-100 transition-colors" />
             </button>
             <button
               onClick={handleZoomOut}
-              className="p-2 hover:bg-gray-100 dark:hover:bg-white rounded transition-colors"
+              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded transition-colors group"
               title="Zoom Out"
             >
-              <ZoomOut size={18} className="text-gray-700 dark:text-white" />
+              <ZoomOut size={18} className="text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-gray-100 transition-colors" />
             </button>
             <button
               onClick={handleResetZoom}
-              className="p-2 hover:bg-gray-100 dark:hover:bg-white rounded transition-colors"
+              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded transition-colors group"
               title="Reset Zoom"
             >
-              <Maximize2 size={18} className="text-gray-700 dark:text-white" />
+              <Maximize2 size={18} className="text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-gray-100 transition-colors" />
             </button>
             <div className="px-2 py-1 text-xs text-center text-gray-600 dark:text-white border-t border-gray-200 dark:border-white/20 mt-1">
               {Math.round(zoom * 100)}%

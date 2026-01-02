@@ -43,7 +43,7 @@ export default function EmojiPicker({ onEmojiSelect, onClose }: {
         <h3 className="text-sm font-semibold text-gray-900 dark:text-white">Emoji</h3>
         <button
           onClick={onClose}
-          className="text-gray-400 dark:text-white hover:text-gray-600 dark:hover:text-black transition"
+          className="text-gray-400 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition"
         >
           <X size={16} />
         </button>
@@ -56,8 +56,8 @@ export default function EmojiPicker({ onEmojiSelect, onClose }: {
             onClick={() => setSelectedCategory(category)}
             className={`px-2 py-1 text-xs rounded transition ${
               selectedCategory === category
-                ? "bg-gray-200 dark:bg-white text-gray-900 dark:text-black"
-                : "text-gray-600 dark:text-white hover:bg-gray-100 dark:hover:bg-white"
+                ? "bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-200"
             }`}
           >
             {category.split(" ")[0]}
@@ -73,7 +73,7 @@ export default function EmojiPicker({ onEmojiSelect, onClose }: {
               onEmojiSelect(emoji)
               onClose()
             }}
-            className="text-2xl hover:bg-gray-100 dark:hover:bg-white rounded p-1 transition"
+            className="text-2xl hover:bg-gray-100 dark:hover:bg-gray-800 rounded p-1 transition"
           >
             {emoji}
           </button>
