@@ -25,7 +25,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`font-sans antialiased`} suppressHydrationWarning>
+      {/* Mobile-specific: prevent horizontal scroll globally without affecting desktop */}
+      <body className={`font-sans antialiased min-h-screen overflow-x-hidden`} suppressHydrationWarning>
         <Providers>
           <ThemeProvider
             attribute="class"

@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { Menu, X } from "lucide-react"
 import Sidebar from "./sidebar"
 import MainContent from "./main-content-refactored"
 import ExplorePage from "./explore-page"
@@ -16,6 +17,8 @@ export default function Dashboard() {
   const [isLoading, setIsLoading] = useState(false)
   const [user, setUser] = useState(null)
   const [pods, setPods] = useState([])
+  // Mobile-only: hamburger menu toggle state
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   // Fetch user data and pods on mount
   useEffect(() => {
@@ -78,6 +81,8 @@ export default function Dashboard() {
     } else {
       setActiveView(view)
     }
+    // Mobile-only: close menu after navigating
+    setMobileMenuOpen(false)
   }
 
   const handleCreatePod = async (podData: any) => {
@@ -111,14 +116,60 @@ export default function Dashboard() {
   const shouldShowSidebar = !["explore", "canvas"].includes(activeView)
 
   return (
-    <div className="flex h-screen bg-gray-50 dark:bg-black">
+    <div className="flex h-screen bg-gray-50 dark:bg-black relative">
+      {/* Desktop sidebar remains unchanged; hidden on < md */}
       {shouldShowSidebar && (
-        <Sidebar 
-          activeView={activeView} 
-          onNavigate={handleNavigate}
-          pods={pods}
-          user={user}
-        />
+        <div className="hidden md:block">
+          <Sidebar
+            activeView={activeView}
+            onNavigate={handleNavigate}
+            pods={pods}
+            user={user}
+          />
+        </div>
+      )}
+
+      {/* Mobile hamburger button - visible only on small screens */}
+      {/* Mobile-specific: persistent hamburger to open navigation */}
+      <button
+        aria-label="Open navigation menu"
+        className="md:hidden fixed top-3 left-3 z-50 inline-flex items-center justify-center w-10 h-10 rounded-lg bg-white dark:bg-black border border-gray-200 dark:border-white/20 shadow"
+        onClick={() => setMobileMenuOpen(true)}
+      >
+        <Menu size={20} className="text-gray-800 dark:text-white" />
+      </button>
+
+      {/* Mobile slide-over menu using existing Sidebar content */}
+      {mobileMenuOpen && (
+        <>
+          {/* Backdrop */}
+          <div
+            className="md:hidden fixed inset-0 z-40 bg-black/50"
+            onClick={() => setMobileMenuOpen(false)}
+          />
+          {/* Panel */}
+          <div className="md:hidden fixed inset-y-0 left-0 z-50 w-64 max-w-[80%] bg-white dark:bg-black shadow-xl transform transition-transform">
+            <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-white/20">
+              <span className="text-sm font-semibold text-gray-800 dark:text-white">Menu</span>
+              <button
+                aria-label="Close navigation menu"
+                className="inline-flex items-center justify-center w-8 h-8 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <X size={18} className="text-gray-800 dark:text-white" />
+              </button>
+            </div>
+            {/* Reuse Sidebar for consistency; closes on link click */}
+            <div className="h-[calc(100vh-52px)] overflow-y-auto">
+              <Sidebar
+                activeView={activeView}
+                onNavigate={handleNavigate}
+                pods={pods}
+                user={user}
+              />
+            </div>
+          </div>
+        </>
       )}
       {activeView === "dashboard" && (
         <MainContent

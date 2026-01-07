@@ -122,6 +122,11 @@
   body {
     @apply bg-background text-foreground;
   }
+  /* Mobile-specific: ensure media elements don't overflow containers */
+  img, video {
+    max-width: 100%;
+    height: auto;
+  }
 }
 
 @layer utilities {

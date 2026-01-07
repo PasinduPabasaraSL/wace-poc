@@ -185,7 +185,8 @@ function DashboardView({
   return (
     <div className="flex-1 flex flex-col overflow-hidden bg-white dark:bg-black">
       {/* Top Navigation */}
-      <div className="bg-white dark:bg-black border-b border-gray-200 dark:border-white/20 px-8 py-6 flex items-center justify-between shadow-sm">
+      {/* Mobile-specific: tighten padding on small screens to prevent overflow */}
+      <div className="bg-white dark:bg-black border-b border-gray-200 dark:border-white/20 pl-14 pr-4 md:px-8 py-4 md:py-6 flex items-center justify-between shadow-sm">
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
         <div className="flex items-center gap-3">
           <ThemeToggle />
@@ -294,20 +295,22 @@ function DashboardView({
             )}
             <ChevronDown size={16} className="text-gray-600 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-gray-100 transition-colors" />
           </button>
+          {/* Mobile-specific: hide label on very small screens to avoid overflow */}
           <button
             onClick={handleLogout}
-            className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100 rounded-lg transition-all group"
+            className="flex items-center gap-2 px-3 md:px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100 rounded-lg transition-all group"
             title="Log out"
           >
             <LogOut size={16} className="group-hover:text-gray-900 dark:group-hover:text-gray-100 transition-colors" />
-            <span>Log out</span>
+            <span className="hidden sm:inline">Log out</span>
           </button>
         </div>
       </div>
 
       {/* Main Content */}
       <div className="flex-1 overflow-auto bg-gray-50 dark:bg-black">
-        <div className="p-8">
+        {/* Mobile-specific: reduce padding to avoid horizontal pressure */}
+        <div className="p-4 md:p-8">
           {/* Welcome Text */}
           <div className="mb-8">
             <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">{welcomeMessage}</h2>
@@ -833,7 +836,7 @@ function PodCanvas({ podName, pod, onBack, isLoading, user }: PodCanvasProps) {
       onMouseLeave={handleMouseUp}
     >
       {/* Top Header */}
-      <div className="absolute top-0 left-0 right-0 z-10 px-8 py-4 flex items-center justify-between pointer-events-none">
+      <div className="absolute top-0 left-0 right-0 z-10 pl-14 pr-4 md:px-8 py-3 md:py-4 flex items-center justify-between pointer-events-none">
         {/* Left: Pod Info */}
         <div className="flex items-center gap-4 pointer-events-auto">
           <button
@@ -867,8 +870,9 @@ function PodCanvas({ podName, pod, onBack, isLoading, user }: PodCanvasProps) {
         </div>
 
         {/* Middle: Floating Nav Bar */}
-        <div className="absolute left-1/2 transform -translate-x-1/2 pointer-events-auto">
-          <div className="bg-white dark:bg-white rounded-lg px-3 py-2 flex items-center gap-3 shadow-sm">
+        {/* Mobile-specific: allow horizontal scroll to avoid page overflow */}
+        <div className="absolute left-1/2 transform -translate-x-1/2 pointer-events-auto max-w-[90vw] md:max-w-none overflow-x-auto">
+          <div className="bg-white dark:bg-white rounded-lg px-3 py-2 flex items-center gap-3 shadow-sm whitespace-nowrap">
             <NavButton
               icon={<MessageCircle size={18} />}
               title="Chat"
@@ -927,7 +931,7 @@ function PodCanvas({ podName, pod, onBack, isLoading, user }: PodCanvasProps) {
               else if (activeSection === "goals") setShowCreateGoalModal(true)
               else if (activeSection === "meetings") setShowMeetingDevModal(true)
             }}
-            className="flex items-center gap-2 px-4 py-2 bg-gray-900 dark:bg-white text-white dark:text-black text-sm rounded-lg hover:bg-gray-800 dark:hover:bg-white transition"
+            className="flex items-center gap-2 px-3 md:px-4 py-2 bg-gray-900 dark:bg-white text-white dark:text-black text-sm rounded-lg hover:bg-gray-800 dark:hover:bg-white transition"
           >
             <Plus size={16} />
             <span>
@@ -1004,8 +1008,9 @@ function PodCanvas({ podName, pod, onBack, isLoading, user }: PodCanvasProps) {
               transformOrigin: "0 0",
               width: "100%",
               height: "100%",
-              minWidth: "100vw",
-              minHeight: "100vh",
+              // Mobile-specific: avoid 100vw/100vh which can cause horizontal scroll
+              minWidth: "100%",
+              minHeight: "100%",
             }}
           >
             {/* Blocks */}
