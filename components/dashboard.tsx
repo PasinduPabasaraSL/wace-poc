@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Menu, X } from "lucide-react"
+import { X } from "lucide-react"
 import Sidebar from "./sidebar"
 import MainContent from "./main-content-refactored"
 import ExplorePage from "./explore-page"
@@ -129,15 +129,7 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* Mobile hamburger button - visible only on small screens */}
-      {/* Mobile-specific: persistent hamburger to open navigation */}
-      <button
-        aria-label="Open navigation menu"
-        className="md:hidden fixed top-3 left-3 z-50 inline-flex items-center justify-center w-10 h-10 rounded-lg bg-white dark:bg-black border border-gray-200 dark:border-white/20 shadow"
-        onClick={() => setMobileMenuOpen(true)}
-      >
-        <Menu size={20} className="text-gray-800 dark:text-white" />
-      </button>
+      {/* Mobile menu is opened from the top navbar (in `MainContent`). */}
 
       {/* Mobile slide-over menu using existing Sidebar content */}
       {mobileMenuOpen && (
@@ -181,6 +173,7 @@ export default function Dashboard() {
           pods={pods}
           user={user}
           onPodsUpdate={fetchPods}
+          onOpenMobileMenu={() => setMobileMenuOpen(true)}
         />
       )}
       {activeView === "explore" && (
@@ -202,6 +195,7 @@ export default function Dashboard() {
           pods={pods}
           user={user}
           onPodsUpdate={fetchPods}
+          onOpenMobileMenu={() => setMobileMenuOpen(true)}
         />
       )}
       <CreatePodModal

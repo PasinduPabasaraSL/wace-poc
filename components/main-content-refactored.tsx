@@ -1,6 +1,6 @@
 "use client"
 
-import { Bell, ChevronDown, Plus, MessageCircle, File, Video, Calendar, Target, ArrowLeft, Trash2, ZoomIn, ZoomOut, Maximize2, LogOut } from "lucide-react"
+import { Bell, ChevronDown, Plus, MessageCircle, File, Video, Calendar, Target, ArrowLeft, Trash2, ZoomIn, ZoomOut, Maximize2, LogOut, Menu } from "lucide-react"
 import { useState, useEffect, useRef, useCallback, useMemo } from "react"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Spinner } from "@/components/ui/spinner"
@@ -32,6 +32,8 @@ interface MainContentProps {
   onPodClick: (pod: Pod) => void
   onBackToDashboard: () => void
   onNavigate: (view: string, pod?: Pod) => void
+  // Mobile: function to open the mobile sidebar menu
+  onOpenMobileMenu?: () => void
   isLoading?: boolean
   pods?: Pod[]
   user?: User | null
@@ -56,6 +58,7 @@ export default function MainContent({
   onPodClick,
   onBackToDashboard,
   onNavigate,
+  onOpenMobileMenu,
   isLoading = false,
   pods = [],
   user = null,
@@ -78,6 +81,7 @@ export default function MainContent({
         onBack={onBackToDashboard}
         isLoading={isLoading}
         user={user}
+        onOpenMobileMenu={onOpenMobileMenu}
       />
     )
   }
@@ -91,6 +95,7 @@ export default function MainContent({
       onNavigate={onNavigate}
       onPodsUpdate={onPodsUpdate}
       handleLogout={handleLogout}
+      onOpenMobileMenu={onOpenMobileMenu}
     />
   )
 }
@@ -102,6 +107,7 @@ interface DashboardViewProps {
   onNavigate: (view: string, pod?: Pod) => void
   onPodsUpdate?: () => void
   handleLogout: () => void
+  onOpenMobileMenu?: () => void
 }
 
 /**
@@ -117,6 +123,7 @@ function DashboardView({
   onNavigate,
   onPodsUpdate,
   handleLogout,
+  onOpenMobileMenu,
 }: DashboardViewProps) {
   const [notifications, setNotifications] = useState<Notification[]>([])
   const [notificationsLoading, setNotificationsLoading] = useState(true)
@@ -186,9 +193,19 @@ function DashboardView({
     <div className="flex-1 flex flex-col overflow-hidden bg-white dark:bg-black">
       {/* Top Navigation */}
       {/* Mobile-specific: tighten padding on small screens to prevent overflow */}
-      <div className="bg-white dark:bg-black border-b border-gray-200 dark:border-white/20 pl-14 pr-4 md:px-8 py-4 md:py-6 flex items-center justify-between shadow-sm">
+      {/* Mobile-first: reduced left padding and mobile hamburger placed here */}
+      <div className="bg-white dark:bg-black border-b border-gray-200 dark:border-white/20 pl-3 md:pl-14 pr-4 md:px-8 py-4 md:py-6 flex items-center justify-between shadow-sm">
+        {/* Mobile hamburger - visible only on small screens */}
+        <button
+          aria-label="Open navigation menu"
+          className="md:hidden inline-flex items-center justify-center w-10 h-10 mr-2 rounded-lg bg-white dark:bg-black border border-gray-200 dark:border-white/20 shadow pointer-events-auto"
+          onClick={() => onOpenMobileMenu?.()}
+        >
+          <Menu size={18} className="text-gray-800 dark:text-white" />
+        </button>
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
-        <div className="flex items-center gap-3">
+        {/* Desktop actions: hidden on mobile */}
+        <div className="hidden md:flex items-center gap-3">
           <ThemeToggle />
           <Popover>
             <PopoverTrigger asChild>
@@ -370,6 +387,7 @@ interface PodCanvasProps {
   onBack: () => void
   isLoading: boolean
   user?: User | null
+  onOpenMobileMenu?: () => void
 }
 
 /**
@@ -836,9 +854,18 @@ function PodCanvas({ podName, pod, onBack, isLoading, user }: PodCanvasProps) {
       onMouseLeave={handleMouseUp}
     >
       {/* Top Header */}
-      <div className="absolute top-0 left-0 right-0 z-10 pl-14 pr-4 md:px-8 py-3 md:py-4 flex items-center justify-between pointer-events-none">
+      {/* Mobile-first: reduced left padding and mobile hamburger placed here */}
+      <div className="absolute top-0 left-0 right-0 z-10 pl-3 md:pl-14 pr-4 md:px-8 py-3 md:py-4 flex items-center justify-between pointer-events-none">
         {/* Left: Pod Info */}
         <div className="flex items-center gap-4 pointer-events-auto">
+          {/* Mobile hamburger - visible only on small screens */}
+          <button
+            aria-label="Open navigation menu"
+            className="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-lg bg-white dark:bg-black border border-gray-200 dark:border-white/20 shadow mr-2 pointer-events-auto"
+            onClick={() => onOpenMobileMenu?.()}
+          >
+            <Menu size={18} className="text-gray-800 dark:text-white" />
+          </button>
           <button
             onClick={onBack}
             className="p-1.5 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition group"
