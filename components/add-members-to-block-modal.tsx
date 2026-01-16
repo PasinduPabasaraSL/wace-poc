@@ -7,7 +7,6 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
-  DialogFooter,
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Users, X, Check } from "lucide-react"
@@ -105,7 +104,7 @@ export default function AddMembersToBlockModal({ open, onClose, block, podId, on
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-[500px]" showCloseButton={false}>
         <DialogHeader>
           <div className="flex justify-between items-start">
             <div>
@@ -218,16 +217,6 @@ export default function AddMembersToBlockModal({ open, onClose, block, podId, on
           </div>
         )}
 
-        <DialogFooter>
-          <Button
-            type="button"
-            variant="outline"
-            onClick={onClose}
-            className="dark:bg-black dark:text-white dark:border-white"
-          >
-            Close
-          </Button>
-        </DialogFooter>
       </DialogContent>
     </Dialog>
   )
