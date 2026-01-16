@@ -534,19 +534,19 @@ export function CreateGoalModal({
     <>
       <div className="fixed inset-0 bg-black/30 z-40" onClick={onClose} />
 
-      <div onClick={(e) => e.stopPropagation()} className={`fixed z-50 border border-white/15 shadow-2xl bg-black text-white ${isFullscreen ? "inset-0 w-screen h-screen rounded-none" : "left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-md rounded-xl"}`}>
+      <div onClick={(e) => e.stopPropagation()} className={`fixed z-50 border border-gray-200 shadow-2xl bg-white dark:bg-white text-gray-900 dark:text-black ${isFullscreen ? "inset-0 w-screen h-screen rounded-none" : "left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-md rounded-xl"}`}>
         <div className="p-6">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-bold text-white">Create Goal Tracker</h2>
+            <h2 className="text-xl font-bold text-gray-900 dark:text-black">Create Goal Tracker</h2>
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setIsFullscreen((prev) => !prev)}
-                className="p-2 rounded-lg text-gray-300 hover:text-white hover:bg-gray-800 transition"
+                className="p-2 rounded-lg text-gray-400 hover:text-gray-600 dark:text-gray-600 dark:hover:text-gray-600 transition"
                 title={isFullscreen ? "Exit full screen" : "Full screen"}
               >
                 {isFullscreen ? <Minimize2Icon /> : <Maximize2Icon />}
               </button>
-              <button onClick={onClose} className="text-gray-400 hover:text-white hover:bg-gray-800 p-2 rounded transition">
+              <button onClick={onClose} className="text-gray-400 hover:text-gray-600 dark:text-gray-600 dark:hover:text-gray-600 p-2 rounded transition">
                 <X size={20} />
               </button>
             </div>
@@ -554,7 +554,7 @@ export function CreateGoalModal({
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-200 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-black mb-1">
                 Tracker Name <span className="text-red-500">*</span>
               </label>
               <input
@@ -562,13 +562,13 @@ export function CreateGoalModal({
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="e.g., Project Goals"
-                className="w-full px-3 py-2 border border-white/15 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-black text-white placeholder:text-gray-500"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-white text-gray-900 dark:text-black"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-200 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-black mb-1">
                 Description (Optional)
               </label>
               <textarea
@@ -576,12 +576,12 @@ export function CreateGoalModal({
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Add a description for this goal tracker..."
                 rows={3}
-                className="w-full px-3 py-2 border border-white/15 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-black text-white placeholder:text-gray-500 resize-none"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-white text-gray-900 dark:text-black resize-none"
               />
             </div>
 
             {error && (
-              <div className="text-sm text-red-400 bg-red-900/30 p-3 rounded-lg">
+              <div className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 p-3 rounded-lg">
                 {error}
               </div>
             )}
@@ -590,14 +590,14 @@ export function CreateGoalModal({
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2 text-white bg-white/10 rounded-lg hover:bg-white/20 transition"
+                className="px-4 py-2 text-gray-700 dark:text-white bg-gray-100 dark:bg-white rounded-lg hover:bg-gray-200 dark:hover:bg-white transition"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={isCreating}
-                className="px-4 py-2 bg-white text-black rounded-lg hover:bg-gray-200 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-4 py-2 bg-gray-900 dark:bg-white text-white dark:text-black rounded-lg hover:bg-gray-800 dark:hover:bg-white transition disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isCreating ? "Creating..." : "Create Tracker"}
               </button>

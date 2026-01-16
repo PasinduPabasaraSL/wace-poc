@@ -118,16 +118,16 @@ export function GoalModal({
 
       <div
         onClick={(e) => e.stopPropagation()}
-        className={`fixed z-50 border border-gray-200 shadow-2xl flex flex-col bg-white dark:bg-black text-gray-900 dark:text-white ${
+        className={`fixed z-50 border border-gray-200 shadow-2xl flex flex-col bg-white dark:bg-white text-gray-900 dark:text-black ${
           isFullscreen
             ? "inset-0 w-screen h-screen rounded-none"
             : "left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-4xl h-[85vh] rounded-xl"
         }`}
       >
         {/* Header */}
-        <div className="p-6 border-b border-gray-200 bg-white dark:bg-black">
+        <div className="p-6 border-b border-gray-200 bg-white dark:bg-white">
           <div className="flex justify-between items-center mb-4">
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white">{trackerName}</h3>
+            <h3 className="text-xl font-bold text-gray-900 dark:text-black">{trackerName}</h3>
             <div className="flex items-center gap-2">
               {isCreator && podId && (
                 <button
@@ -150,14 +150,14 @@ export function GoalModal({
               </button>
               <button
                 onClick={() => setIsFullscreen((prev) => !prev)}
-                className="p-2 rounded-lg text-gray-400 hover:text-gray-600 dark:text-white dark:hover:text-gray-200 transition"
+                className="p-2 rounded-lg text-gray-400 hover:text-gray-600 dark:text-gray-600 dark:hover:text-gray-600 transition"
                 title={isFullscreen ? "Exit full screen" : "Full screen"}
               >
                 {isFullscreen ? <Minimize2 size={20} /> : <Maximize2 size={20} />}
               </button>
               <button
                 onClick={onClose}
-                className="p-2 rounded-lg text-gray-400 hover:text-gray-600 dark:text-white dark:hover:text-gray-200 transition"
+                className="p-2 rounded-lg text-gray-400 hover:text-gray-600 dark:text-gray-600 dark:hover:text-gray-600 transition"
               >
                 <X size={20} />
               </button>
