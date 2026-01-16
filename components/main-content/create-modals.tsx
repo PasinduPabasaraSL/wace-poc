@@ -81,7 +81,7 @@ export function CreateChatModal({
 
   return (
     <>
-      <div className="fixed inset-0 bg-black dark:bg-black bg-opacity-20 dark:bg-opacity-50 z-40" onClick={onClose} />
+      <div className="fixed inset-0 bg-black/30 dark:bg-black/30 backdrop-blur-sm z-40" onClick={onClose} />
       <div className="fixed left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-white dark:bg-white rounded-xl shadow-2xl z-50 border border-gray-200 dark:border-white/20">
         <div className="p-6">
           <div className="flex justify-between items-center mb-4">
@@ -226,7 +226,7 @@ export function CreateDocModal({
 
   return (
     <>
-      <div className="fixed inset-0 bg-black dark:bg-black bg-opacity-20 dark:bg-opacity-50 z-40" onClick={onClose} />
+      <div className="fixed inset-0 bg-black/30 dark:bg-black/30 backdrop-blur-sm z-40" onClick={onClose} />
 
       <div className="fixed left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-white dark:bg-white rounded-xl shadow-2xl z-50 border border-gray-200 dark:border-white/20">
         <div className="p-6">

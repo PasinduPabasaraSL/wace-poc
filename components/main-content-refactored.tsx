@@ -400,7 +400,7 @@ interface PodCanvasProps {
  * - Event handlers for mouse/touch interactions
  * - Fetches and manages block data
  */
-function PodCanvas({ podName, pod, onBack, isLoading, user }: PodCanvasProps) {
+function PodCanvas({ podName, pod, onBack, isLoading, user, onOpenMobileMenu }: PodCanvasProps) {
   const podData = pod || { name: podName, tagline: "", id: null, logoUrl: undefined }
 
   const [activeSection, setActiveSection] = useState("chat")
@@ -472,6 +472,13 @@ function PodCanvas({ podName, pod, onBack, isLoading, user }: PodCanvasProps) {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.code === "Space" && !e.repeat) {
+        const active = document.activeElement as HTMLElement | null
+        const isTyping = !!(
+          active &&
+          (active.tagName === "INPUT" || active.tagName === "TEXTAREA" || active.isContentEditable)
+        )
+        if (isTyping) return
+
         e.preventDefault()
         setIsSpacePressed(true)
         if (canvasRef.current) {
@@ -660,6 +667,17 @@ function PodCanvas({ podName, pod, onBack, isLoading, user }: PodCanvasProps) {
   }
 
   const handleWheel = (e: React.WheelEvent) => {
+    // Ignore wheel events that originated inside the chat modal overlay so
+    // the canvas/global zoom does not respond while the modal is open.
+    try {
+      const target = e.target as Element | null
+      if (target && typeof target.closest === "function" && target.closest(".chat-modal-wrapper")) {
+        return
+      }
+    } catch (err) {
+      // ignore
+    }
+
     e.preventDefault()
     e.stopPropagation()
 

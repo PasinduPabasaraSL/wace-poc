@@ -47,6 +47,7 @@ export function ChatModal({
   const [mentionPosition, setMentionPosition] = useState({ top: 0, left: 0 })
   const inputRef = useRef<HTMLInputElement>(null)
   const isMountedRef = useRef(true)
+  const messagesRef = useRef<HTMLDivElement | null>(null)
   const [isFullscreen, setIsFullscreen] = useState(false)
   const [podOwnerId, setPodOwnerId] = useState<string | null>(null)
   
@@ -159,6 +160,8 @@ export function ChatModal({
 
       if (response.ok) {
         setMessageInput("")
+        // mark sending as false so UI updates; focusing handled in effect
+        setSending(false)
         fetchMessages()
         if (onUnreadUpdate) onUnreadUpdate()
       } else {
@@ -172,6 +175,113 @@ export function ChatModal({
       setSending(false)
     }
   }
+
+  // Focus input after sending completes (true -> false)
+  const prevSendingRef = useRef(sending)
+  useEffect(() => {
+    if (prevSendingRef.current && !sending) {
+      // ensure DOM has updated, then focus
+      requestAnimationFrame(() => {
+        inputRef.current?.focus()
+        try {
+          const len = inputRef.current?.value.length || 0
+          inputRef.current?.setSelectionRange(len, len)
+        } catch (err) {
+          // ignore
+        }
+      })
+    }
+    prevSendingRef.current = sending
+  }, [sending])
+
+  // Block Ctrl+wheel / pinch zoom at the document/window level while this modal is mounted.
+  // Register non-passive, capturing listeners so we can intercept zoom gestures
+  // and keyboard shortcuts while the modal is open. Cleanup restores normal behavior.
+  useEffect(() => {
+    const wheelHandler = (ev: WheelEvent) => {
+      try {
+        if (ev.ctrlKey) {
+          console.log("chat modal wheel handler", { ctrl: ev.ctrlKey, deltaY: ev.deltaY })
+          ev.preventDefault()
+          ev.stopPropagation()
+        }
+      } catch (err) {
+        // ignore
+      }
+    }
+
+    const keyHandler = (ev: KeyboardEvent) => {
+      try {
+        const k = ev.key
+        if ((ev.ctrlKey || ev.metaKey) && (k === "+" || k === "-" || k === "0" || k === "=")) {
+          console.log("chat modal key handler", { key: k })
+          ev.preventDefault()
+          ev.stopPropagation()
+        }
+      } catch (err) {
+        // ignore
+      }
+    }
+
+    // Optional: iOS Safari gesture events (prevent pinch-to-zoom there)
+    const gestureHandler = (ev: any) => {
+      try {
+        console.log("chat modal gesture handler")
+        ev.preventDefault()
+        ev.stopPropagation()
+      } catch (err) {
+        // ignore
+      }
+    }
+
+    // Attach to both document and window to ensure we intercept in all browsers
+    document.addEventListener("wheel", wheelHandler as EventListener, {
+      passive: false,
+      capture: true,
+    })
+    window.addEventListener("wheel", wheelHandler as EventListener, {
+      passive: false,
+      capture: true,
+    })
+
+    window.addEventListener("keydown", keyHandler as EventListener, { capture: true })
+
+    document.addEventListener("gesturestart", gestureHandler as EventListener, {
+      passive: false,
+      capture: true,
+    })
+    document.addEventListener("gesturechange", gestureHandler as EventListener, {
+      passive: false,
+      capture: true,
+    })
+    document.addEventListener("gestureend", gestureHandler as EventListener, {
+      passive: false,
+      capture: true,
+    })
+
+    return () => {
+      document.removeEventListener("wheel", wheelHandler as EventListener, {
+        capture: true,
+      } as AddEventListenerOptions)
+      window.removeEventListener("wheel", wheelHandler as EventListener, {
+        capture: true,
+      } as AddEventListenerOptions)
+
+      window.removeEventListener("keydown", keyHandler as EventListener, {
+        capture: true,
+      } as AddEventListenerOptions)
+
+      document.removeEventListener("gesturestart", gestureHandler as EventListener, {
+        capture: true,
+      } as AddEventListenerOptions)
+      document.removeEventListener("gesturechange", gestureHandler as EventListener, {
+        capture: true,
+      } as AddEventListenerOptions)
+      document.removeEventListener("gestureend", gestureHandler as EventListener, {
+        capture: true,
+      } as AddEventListenerOptions)
+    }
+  }, [])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
@@ -273,11 +383,19 @@ export function ChatModal({
       <div className="fixed inset-0 bg-black/60 z-40" onClick={onClose} />
 
       <div
-        className={`fixed z-50 border border-white/15 shadow-2xl flex bg-black text-white ${
+        className={`chat-modal-wrapper fixed z-50 border border-white/15 shadow-2xl flex bg-black text-white ${
           isFullscreen
             ? "inset-0 w-screen h-screen rounded-none"
             : "left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-4xl h-[85vh] rounded-xl"
         }`}
+        onWheelCapture={(e) => {
+          try {
+            e.stopPropagation()
+            ;(e.nativeEvent as WheelEvent).stopImmediatePropagation()
+          } catch (err) {
+            // ignore
+          }
+        }}
       >
         {/* Left Panel - Members Sidebar */}
         <div className="w-64 border-r border-white/15 flex flex-col bg-black">
@@ -375,7 +493,7 @@ export function ChatModal({
 
         {/* Right Panel - Chat */}
         <div className="flex-1 flex flex-col overflow-hidden bg-black">
-          <div className="flex-1 overflow-y-auto p-4 space-y-4">
+          <div ref={messagesRef} className="flex-1 overflow-y-auto p-4 space-y-4">
             {loading ? (
               <div className="flex items-center justify-center h-full">
                 <p className="text-gray-300">Loading messages...</p>
@@ -482,7 +600,7 @@ export function ChatModal({
                       setShowEmojiPicker(false)
                     }
                   }}
-                  disabled={sending}
+                  // keep input enabled while sending so it can be focused
                   className="w-full px-4 py-2 bg-gray-900 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-gray-900 transition text-white placeholder:text-gray-500 border border-white/10"
                 />
                 {showMentionAutocomplete && members.length > 0 && (
@@ -497,6 +615,7 @@ export function ChatModal({
               </div>
               <button
                 type="submit"
+                onMouseDown={(e) => e.preventDefault()}
                 disabled={sending || !messageInput.trim()}
                 className="px-4 py-2 bg-white text-black rounded-lg hover:bg-gray-200 transition disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
               >
