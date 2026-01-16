@@ -400,7 +400,7 @@ interface PodCanvasProps {
  * - Event handlers for mouse/touch interactions
  * - Fetches and manages block data
  */
-function PodCanvas({ podName, pod, onBack, isLoading, user }: PodCanvasProps) {
+function PodCanvas({ podName, pod, onBack, isLoading, user, onOpenMobileMenu }: PodCanvasProps) {
   const podData = pod || { name: podName, tagline: "", id: null, logoUrl: undefined }
 
   const [activeSection, setActiveSection] = useState("chat")
@@ -472,6 +472,13 @@ function PodCanvas({ podName, pod, onBack, isLoading, user }: PodCanvasProps) {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.code === "Space" && !e.repeat) {
+        const active = document.activeElement as HTMLElement | null
+        const isTyping = !!(
+          active &&
+          (active.tagName === "INPUT" || active.tagName === "TEXTAREA" || active.isContentEditable)
+        )
+        if (isTyping) return
+
         e.preventDefault()
         setIsSpacePressed(true)
         if (canvasRef.current) {

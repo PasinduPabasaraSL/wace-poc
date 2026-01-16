@@ -159,6 +159,8 @@ export function ChatModal({
 
       if (response.ok) {
         setMessageInput("")
+        // mark sending as false so UI updates; focusing handled in effect
+        setSending(false)
         fetchMessages()
         if (onUnreadUpdate) onUnreadUpdate()
       } else {
@@ -172,6 +174,24 @@ export function ChatModal({
       setSending(false)
     }
   }
+
+  // Focus input after sending completes (true -> false)
+  const prevSendingRef = useRef(sending)
+  useEffect(() => {
+    if (prevSendingRef.current && !sending) {
+      // ensure DOM has updated, then focus
+      requestAnimationFrame(() => {
+        inputRef.current?.focus()
+        try {
+          const len = inputRef.current?.value.length || 0
+          inputRef.current?.setSelectionRange(len, len)
+        } catch (err) {
+          // ignore
+        }
+      })
+    }
+    prevSendingRef.current = sending
+  }, [sending])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
@@ -482,7 +502,7 @@ export function ChatModal({
                       setShowEmojiPicker(false)
                     }
                   }}
-                  disabled={sending}
+                  // keep input enabled while sending so it can be focused
                   className="w-full px-4 py-2 bg-gray-900 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-gray-900 transition text-white placeholder:text-gray-500 border border-white/10"
                 />
                 {showMentionAutocomplete && members.length > 0 && (
@@ -497,6 +517,7 @@ export function ChatModal({
               </div>
               <button
                 type="submit"
+                onMouseDown={(e) => e.preventDefault()}
                 disabled={sending || !messageInput.trim()}
                 className="px-4 py-2 bg-white text-black rounded-lg hover:bg-gray-200 transition disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
               >
