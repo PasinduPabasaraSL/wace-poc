@@ -667,6 +667,17 @@ function PodCanvas({ podName, pod, onBack, isLoading, user, onOpenMobileMenu }: 
   }
 
   const handleWheel = (e: React.WheelEvent) => {
+    // Ignore wheel events that originated inside the chat modal overlay so
+    // the canvas/global zoom does not respond while the modal is open.
+    try {
+      const target = e.target as Element | null
+      if (target && typeof target.closest === "function" && target.closest(".chat-modal-wrapper")) {
+        return
+      }
+    } catch (err) {
+      // ignore
+    }
+
     e.preventDefault()
     e.stopPropagation()
 
