@@ -93,9 +93,15 @@ export function CalendarModal({
 
   return (
     <>
-      <div className="fixed inset-0 bg-black/60 z-40" onClick={onClose} />
+      {!showAddEventModal && (
+        <div
+          className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40"
+          onClick={onClose}
+        />
+      )}
 
       <div
+        onClick={(e) => e.stopPropagation()}
         className={`fixed z-50 border border-white/15 shadow-2xl flex flex-col bg-black text-white ${
           isFullscreen
             ? "inset-0 w-screen h-screen rounded-none"
@@ -312,9 +318,15 @@ export function AddEventModal({
 
   return (
     <>
-      <div className="fixed inset-0 bg-black dark:bg-white bg-opacity-30 dark:bg-opacity-30 z-50" onClick={onClose} />
+      <div
+        className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40"
+        onClick={onClose}
+      />
 
-      <div className="fixed left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-white dark:bg-black rounded-xl shadow-2xl z-[60] border border-gray-200 dark:border-white/20">
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="fixed left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-white dark:bg-black rounded-xl shadow-2xl z-50 border border-gray-200 dark:border-white/20"
+      >
         <div className="p-6">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-bold text-gray-900 dark:text-white">

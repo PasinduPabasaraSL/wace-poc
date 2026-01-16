@@ -380,9 +380,10 @@ export function ChatModal({
 
   return (
     <>
-      <div className="fixed inset-0 bg-black/60 z-40" onClick={onClose} />
+      <div className="fixed inset-0 bg-black/30 z-40" onClick={onClose} />
 
       <div
+        onClick={(e) => e.stopPropagation()}
         className={`chat-modal-wrapper fixed z-50 border border-white/15 shadow-2xl flex bg-black text-white ${
           isFullscreen
             ? "inset-0 w-screen h-screen rounded-none"

@@ -20,9 +20,12 @@ export function MeetingModal({ boxId, meetingData, onClose }: MeetingModalProps)
 
   return (
     <>
-      <div className="fixed inset-0 bg-black/60 z-40" onClick={onClose} />
+      <div
+        className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40"
+        onClick={onClose}
+      />
 
-      <div className="fixed left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-black text-white rounded-xl shadow-2xl flex flex-col z-50 border border-white/15">
+      <div onClick={(e) => e.stopPropagation()} className="fixed left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-black text-white rounded-xl shadow-2xl flex flex-col z-50 border border-white/15">
         {/* Header */}
         <div className="p-6 border-b border-white/15 bg-black">
           <div className="flex justify-between items-center">
@@ -70,11 +73,11 @@ export function FeatureUnderDevModal({ open, onClose, featureName }: FeatureUnde
   return (
     <>
       <div
-        className="fixed inset-0 bg-black dark:bg-white bg-opacity-20 dark:bg-opacity-20 z-40"
+        className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40"
         onClick={onClose}
       />
 
-      <div className="fixed left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-white dark:bg-black rounded-xl shadow-2xl flex flex-col z-50 border border-gray-200 dark:border-white/20">
+      <div onClick={(e) => e.stopPropagation()} className="fixed left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-white dark:bg-black rounded-xl shadow-2xl flex flex-col z-50 border border-gray-200 dark:border-white/20">
         <div className="p-6">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-bold text-gray-900 dark:text-white">Feature Under Development</h2>

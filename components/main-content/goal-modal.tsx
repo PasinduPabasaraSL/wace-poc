@@ -114,24 +114,25 @@ export function GoalModal({
 
   return (
     <>
-      <div className="fixed inset-0 bg-black/60 z-40" onClick={onClose} />
+      <div className="fixed inset-0 bg-black/30 z-40" onClick={onClose} />
 
       <div
-        className={`fixed z-50 border border-white/15 shadow-2xl flex flex-col bg-black text-white ${
+        onClick={(e) => e.stopPropagation()}
+        className={`fixed z-50 border border-gray-200 shadow-2xl flex flex-col bg-white dark:bg-black text-gray-900 dark:text-white ${
           isFullscreen
             ? "inset-0 w-screen h-screen rounded-none"
             : "left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-4xl h-[85vh] rounded-xl"
         }`}
       >
         {/* Header */}
-        <div className="p-6 border-b border-white/15 bg-black">
+        <div className="p-6 border-b border-gray-200 bg-white dark:bg-black">
           <div className="flex justify-between items-center mb-4">
-            <h3 className="text-xl font-bold text-white">{trackerName}</h3>
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white">{trackerName}</h3>
             <div className="flex items-center gap-2">
               {isCreator && podId && (
                 <button
                   onClick={() => setShowAddMembersModal(true)}
-                  className="px-4 py-2 bg-white text-black text-sm rounded-lg hover:bg-gray-200 transition flex items-center gap-2"
+                  className="px-4 py-2 bg-gray-900 text-white dark:bg-white dark:text-black text-sm rounded-lg hover:bg-gray-800 dark:hover:bg-gray-200 transition flex items-center gap-2"
                 >
                   <Users size={16} />
                   <span>Add Members</span>
@@ -142,21 +143,21 @@ export function GoalModal({
                   setEditingGoal(null)
                   setShowAddGoalModal(true)
                 }}
-                className="px-4 py-2 bg-white text-black text-sm rounded-lg hover:bg-gray-200 transition flex items-center gap-2"
+                className="px-4 py-2 bg-gray-900 text-white dark:bg-white dark:text-black text-sm rounded-lg hover:bg-gray-800 dark:hover:bg-gray-200 transition flex items-center gap-2"
               >
                 <Plus size={16} />
                 <span>Add Goal</span>
               </button>
               <button
                 onClick={() => setIsFullscreen((prev) => !prev)}
-                className="p-2 rounded-lg text-gray-300 hover:text-white hover:bg-gray-800 transition"
+                className="p-2 rounded-lg text-gray-400 hover:text-gray-600 dark:text-white dark:hover:text-gray-200 transition"
                 title={isFullscreen ? "Exit full screen" : "Full screen"}
               >
                 {isFullscreen ? <Minimize2 size={20} /> : <Maximize2 size={20} />}
               </button>
               <button
                 onClick={onClose}
-                className="p-2 rounded-lg text-gray-300 hover:text-white hover:bg-gray-800 transition"
+                className="p-2 rounded-lg text-gray-400 hover:text-gray-600 dark:text-white dark:hover:text-gray-200 transition"
               >
                 <X size={20} />
               </button>
@@ -168,20 +169,20 @@ export function GoalModal({
         <div className="flex-1 overflow-y-auto p-6">
           {loading ? (
             <div className="flex items-center justify-center h-full">
-              <p className="text-gray-300">Loading goals...</p>
+              <p className="text-gray-500 dark:text-gray-300">Loading goals...</p>
             </div>
           ) : goals.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-center">
               <Target size={48} className="text-gray-500 mb-4" />
-              <p className="text-gray-200 font-medium mb-1">No goals yet</p>
-              <p className="text-sm text-gray-400">Add your first goal to get started</p>
+              <p className="text-gray-700 dark:text-gray-200 font-medium mb-1">No goals yet</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">Add your first goal to get started</p>
             </div>
           ) : (
             <div className="space-y-3">
               {goals.map((goal) => (
                 <div
                   key={goal.id}
-                  className="p-4 rounded-lg border border-white/15 bg-black hover:bg-gray-900 transition"
+                  className="p-4 rounded-lg border border-gray-300 bg-gray-50 dark:bg-gray-900 dark:border-white/15 hover:bg-gray-100 dark:hover:bg-gray-800 transition"
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex items-start gap-3 flex-1">
@@ -204,11 +205,11 @@ export function GoalModal({
                         )}
                       </button>
                       <div className="flex-1 min-w-0">
-                        <p className="font-semibold text-sm text-white">{goal.title}</p>
+                        <p className="font-semibold text-sm text-gray-900 dark:text-white">{goal.title}</p>
                         <div className="flex items-center gap-3 mt-1">
-                          <p className="text-xs text-gray-300">Due: {formattedDates[goal.id] || "No due date"}</p>
+                          <p className="text-xs text-gray-500 dark:text-gray-300">Due: {formattedDates[goal.id] || "No due date"}</p>
                           {goal.createdBy && (
-                            <p className="text-xs text-gray-400">by {goal.createdBy.name}</p>
+                            <p className="text-xs text-gray-500 dark:text-gray-400">by {goal.createdBy.name}</p>
                           )}
                         </div>
                       </div>
@@ -228,10 +229,10 @@ export function GoalModal({
                       {user?.id === goal.createdBy?.id && (
                         <button
                           onClick={() => handleDeleteGoal(goal.id)}
-                          className="p-1.5 hover:bg-red-900/50 rounded transition flex-shrink-0"
+                          className="p-1.5 hover:bg-red-100 dark:hover:bg-red-900/50 rounded transition flex-shrink-0"
                           title="Delete"
                         >
-                          <Trash2 size={16} className="text-red-400" />
+                          <Trash2 size={16} className="text-red-500 dark:text-red-400" />
                         </button>
                       )}
                     </div>
@@ -353,15 +354,15 @@ export function AddGoalModal({
 
   return (
     <>
-      <div className="fixed inset-0 bg-black/60 z-50" onClick={onClose} />
+      <div className="fixed inset-0 bg-black/30 z-40" onClick={onClose} />
 
-      <div className="fixed left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-black text-white rounded-xl shadow-2xl z-[60] border border-white/15">
+      <div onClick={(e) => e.stopPropagation()} className="fixed left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-white dark:bg-white rounded-xl shadow-2xl z-50 border border-gray-200 dark:border-white/20">
         <div className="p-6">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-bold text-white">{goal ? "Edit Goal" : "Add Goal"}</h2>
+            <h2 className="text-xl font-bold text-gray-900 dark:text-black">{goal ? "Edit Goal" : "Add Goal"}</h2>
             <button
               onClick={onClose}
-              className="text-gray-400 hover:text-white hover:bg-gray-800 p-2 rounded transition"
+              className="text-gray-400 dark:text-black hover:text-gray-600 dark:hover:text-gray-600 transition"
             >
               <X size={20} />
             </button>
@@ -369,7 +370,7 @@ export function AddGoalModal({
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-200 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-black mb-1">
                 Task Name <span className="text-red-500">*</span>
               </label>
               <input
@@ -377,27 +378,27 @@ export function AddGoalModal({
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="e.g., Complete project documentation"
-                className="w-full px-3 py-2 border border-white/15 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-black text-white placeholder:text-gray-500"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-white text-gray-900 dark:text-black"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-200 mb-1">Due Date (Optional)</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-black mb-1">Due Date (Optional)</label>
               <input
                 type="date"
                 value={dueDate}
                 onChange={(e) => setDueDate(e.target.value)}
-                className="w-full px-3 py-2 border border-white/15 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-black text-white"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-white text-gray-900 dark:text-black"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-200 mb-1">Status</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-black mb-1">Status</label>
               <select
                 value={status}
                 onChange={(e) => setStatus(e.target.value as Goal["status"])}
-                className="w-full px-3 py-2 border border-white/15 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-black text-white"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-white text-gray-900 dark:text-black"
               >
                 <option value="not_started">Not Completed</option>
                 <option value="in_progress">Ongoing</option>
@@ -405,20 +406,20 @@ export function AddGoalModal({
               </select>
             </div>
 
-            {error && <div className="text-sm text-red-400 bg-red-900/30 p-3 rounded-lg">{error}</div>}
+            {error && <div className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 p-3 rounded-lg">{error}</div>}
 
             <div className="flex justify-end gap-3 pt-4">
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2 text-white bg-white/10 rounded-lg hover:bg-white/20 transition"
+                className="px-4 py-2 text-gray-700 dark:text-white bg-gray-100 dark:bg-white rounded-lg hover:bg-gray-200 dark:hover:bg-white transition"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="px-4 py-2 bg-white text-black rounded-lg hover:bg-gray-200 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-4 py-2 bg-gray-900 dark:bg-white text-white dark:text-black rounded-lg hover:bg-gray-800 dark:hover:bg-white transition disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? (goal ? "Updating..." : "Adding...") : goal ? "Update Goal" : "Add Goal"}
               </button>
